@@ -75,36 +75,34 @@ draw_keypad(selected_row, selected_col)
 # Hauptschleife für die Interaktion
 while True:
     # Überprüfe jede Joystick-Richtung separat
-    # Wir nutzen `is_pressed()` und eine kleine Verzögerung, um Prellen zu vermeiden
-    # und sicherzustellen, dass die Taste losgelassen wird.
+    # WICHTIG: Verwenden der spezifischen pb.pressedX() Methoden
 
     moved = False # Flag, um zu prüfen, ob sich etwas bewegt hat
 
-    if pb.joystick.UP.is_pressed():
+    if pb.pressedUp(): # HIER GEÄNDERT
         selected_row = max(0, selected_row - 1)
         moved = True
-    elif pb.joystick.DOWN.is_pressed():
+    elif pb.pressedDown(): # HIER GEÄNDERT
         selected_row = min(num_rows - 1, selected_row + 1)
         moved = True
-    elif pb.joystick.LEFT.is_pressed():
+    elif pb.pressedLeft(): # HIER GEÄNDERT
         selected_col = max(0, selected_col - 1)
         moved = True
-    elif pb.joystick.RIGHT.is_pressed():
+    elif pb.pressedRight(): # HIER GEÄNDERT
         selected_col = min(num_cols - 1, selected_col + 1)
         moved = True
 
     if moved:
         draw_keypad(selected_row, selected_col)
         # Warte, bis der Joystick losgelassen wird ODER eine Mindestzeit vergeht
-        # Dies verhindert, dass eine einzige Betätigung zu viele Schritte auslöst
         time.sleep(0.15) # Kurze Pause, um die Bewegung zu sehen und Prellen zu reduzieren
-        # Optional: Eine Schleife, die wartet, bis die Taste losgelassen wird
-        while pb.joystick.UP.is_pressed() or pb.joystick.DOWN.is_pressed() or \
-                pb.joystick.LEFT.is_pressed() or pb.joystick.RIGHT.is_pressed():
+        # Warte auf Freigabe der Taste(n)
+        while pb.pressedUp() or pb.pressedDown() or \
+                pb.pressedLeft() or pb.pressedRight():
             time.sleep(0.01) # Kleine Verzögerung während des Wartens
 
     # Joystick-Klick (Bestätigung)
-    if pb.joystick.CENTER.is_pressed():
+    if pb.pressedCenter(): # HIER GEÄNDERT
         selected_value = keypad_values[selected_row][selected_col]
         entered_numbers.append(selected_value) # Wert zur Liste hinzufügen
         draw_keypad(selected_row, selected_col) # Nummernfeld neu zeichnen (mit aktualisierter Eingabezeile)
@@ -113,7 +111,7 @@ while True:
 
         # Warte, bis der CENTER-Button losgelassen wird
         time.sleep(0.2) # Eine kurze Pause nach dem Klick
-        while pb.joystick.CENTER.is_pressed():
+        while pb.pressedCenter():
             time.sleep(0.01) # Warten, bis der Button freigegeben wird
 
 
